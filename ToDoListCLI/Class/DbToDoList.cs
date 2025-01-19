@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.VisualBasic;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace ToDoListCLI.Class
 {
     internal class DbToDoList : BdConnection
     {
-        public DbToDoList(string server, string db, string user, string port) : base(server, db, user, port)
+        public DbToDoList(string paht) : base(paht)
         {
 
         }
@@ -20,9 +21,9 @@ namespace ToDoListCLI.Class
             Abrir();
             string strState, strPriority;
             var allTask = new List<TasksToDoList>();
-            string query = "SELECT * FROM todolist.tasks; ";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
-            MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+            string query = "SELECT * FROM tasks; ";
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
+            SqliteDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
             while (mySqlDataReader.Read())
             {
                 int idTask = mySqlDataReader.GetInt32(0);
@@ -45,9 +46,9 @@ namespace ToDoListCLI.Class
         public void AddTask(TasksToDoList addTask)
         {
             Abrir();
-            string query = "INSERT INTO tasks(TaskName, taskLimitTime, taskCreation, taskUpdate, idFkState, idFkPriority) " +
+            string query = "INSERT INTO tasks(taskName, taskLimitTime, taskCreation, taskUpdate, idFkState, idFkPriority) " +
                 "VALUES(@TaskName, @taskLimitTime, @taskCreation, @taskUpdate, @idFkState, @idFkPriority);";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@TaskName", addTask.TaskName);
             mySqlCommand.Parameters.AddWithValue("@taskLimitTime", addTask.TaskLimitTime);
             mySqlCommand.Parameters.AddWithValue("@taskCreation", addTask.TaskCreation);
@@ -60,8 +61,8 @@ namespace ToDoListCLI.Class
         public void EditTask(string task, DateTime taskUpdate)
         {
             Abrir();
-            string query = "UPDATE todolist.tasks SET TaskName = @TaskName, taskUpdate = @taskUpdate ";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            string query = "UPDATE tasks SET taskName = @TaskName, taskUpdate = @taskUpdate ";
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@TaskName", task);
             mySqlCommand.Parameters.AddWithValue("@taskUpdate", taskUpdate);
             mySqlCommand.ExecuteNonQuery();
@@ -70,8 +71,8 @@ namespace ToDoListCLI.Class
         public void EditStatus(int idState, DateTime taskUpdate)
         {
             Abrir();
-            string query = "UPDATE todolist.tasks SET idFkState = @idFkState, taskUpdate = @taskUpdate ";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            string query = "UPDATE tasks SET idFkState = @idFkState, taskUpdate = @taskUpdate ";
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@idFkState", idState);
             mySqlCommand.Parameters.AddWithValue("@taskUpdate", taskUpdate);
             mySqlCommand.ExecuteNonQuery();
@@ -80,8 +81,8 @@ namespace ToDoListCLI.Class
         public void EditPriority(int idPriority, DateTime taskUpdate)
         {
             Abrir();
-            string query = "UPDATE todolist.tasks SET idFkPriority = @idFkPriority, taskUpdate = @taskUpdate ";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            string query = "UPDATE tasks SET idFkPriority = @idFkPriority, taskUpdate = @taskUpdate ";
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@idFkPriority", idPriority);
             mySqlCommand.Parameters.AddWithValue("@taskUpdate", taskUpdate);
             mySqlCommand.ExecuteNonQuery();
@@ -92,11 +93,11 @@ namespace ToDoListCLI.Class
             string strState, strPriority;
             Abrir();
             TasksToDoList tasks = null;
-            string query = "SELECT * FROM todolist.tasks " +
+            string query = "SELECT * FROM tasks " +
                 "WHERE idTask = @idTask;";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@idTask", id);
-            MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
+            SqliteDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
             while (mySqlDataReader.Read())
             {
                 int idTask = mySqlDataReader.GetInt32(0);
@@ -119,9 +120,9 @@ namespace ToDoListCLI.Class
         public void DeleteTask(int idTask)
         {
             Abrir();
-            string query = "DELETE FROM todolist.tasks " +
+            string query = "DELETE FROM tasks " +
                 "WHERE idTask = @idTask;";
-            MySqlCommand mySqlCommand = new MySqlCommand(query, connection);
+            SqliteCommand mySqlCommand = new SqliteCommand(query, connection);
             mySqlCommand.Parameters.AddWithValue("@idTask", idTask);
             mySqlCommand.ExecuteNonQuery();
             Cerrar();

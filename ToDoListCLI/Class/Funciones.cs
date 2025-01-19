@@ -13,7 +13,7 @@ namespace ToDoListCLI.Class
             if (convert)
                 return "";
             else
-                return "Ingrese numero valido o numero fuera de rango.";
+                return "Igresa un numero valido.";
         }
         public static string GetStatus(int x)
         {

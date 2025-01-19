@@ -1,15 +1,19 @@
 ﻿using K4os.Compression.LZ4.Encoders;
 using K4os.Compression.LZ4.Streams;
 using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Formats.Tar;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ZstdSharp.Unsafe;
+using SQLitePCL;
+using Org.BouncyCastle.Crypto.Engines;
 
 namespace ToDoListCLI.Class
 {
@@ -17,6 +21,7 @@ namespace ToDoListCLI.Class
     {
         public void RunView()
         {
+            Batteries.Init();
             bool Salir = true;
             do
             {
@@ -26,7 +31,7 @@ namespace ToDoListCLI.Class
 
                     bool convert = false;
                     int opc;
-                    var db = new DbToDoList("127.0.0.1", "todolist", "root", "3306");
+                    var db = new DbToDoList(@"D:\basesDeDatos\todolistlite.db");
                     db.Abrir();
                     ShowMenu();
                     Console.Write("Seleciona: ");
@@ -81,7 +86,7 @@ namespace ToDoListCLI.Class
         }
         private void ShowMenu()
         {
-            Console.WriteLine("Elije una opcion");
+            Console.WriteLine("\nElije una opcion");
             Console.WriteLine("1.- Mostrar tareas");
             Console.WriteLine("2.- Crear tarea");
             Console.WriteLine("3.- Modificar una tarea");
@@ -108,6 +113,7 @@ namespace ToDoListCLI.Class
             Console.Clear();
             Console.Write("Nombre de tarea: ");
             string taskName = Console.ReadLine();
+            if (String.IsNullOrEmpty(taskName)) taskName = "Tarea no ingresada";
             Console.Write("Tiempo limite de la tarea (AAAA-MM-DD HH:MM:SS): ");
             DateTime taskLimitTime = DateTime.Parse(Console.ReadLine());
             DateTime taskCreation = DateTime.Now;
@@ -136,6 +142,10 @@ namespace ToDoListCLI.Class
 
                     } while (band == true);
 
+                }
+                else
+                {
+                    band = false;
                 }
             } while (band == true);
             var addTask = new TasksToDoList(taskName, taskLimitTime, taskCreation, taskUpdate, idStatus, idPriority);
@@ -271,16 +281,21 @@ namespace ToDoListCLI.Class
             int idTask;
             do
             {
-                Console.WriteLine("Escribe el id de la tarea: ");
+                Console.Write("Escribe el id de la tarea: ");
                 conver = int.TryParse(Console.ReadLine(), out idTask);
                 if (conver == false)
                 {
                     Console.WriteLine(Funciones.ConverNum(conver));
-                    band = false;
+                    band = true;
                 }
-                else band = true;
+                else band = false;
             } while (band);
-            dbToDoList.DeleteTask(idTask);
+            var task = dbToDoList.GetTask(idTask);
+            if (task != null)
+            {
+                dbToDoList.DeleteTask(idTask);
+            }else
+                Console.WriteLine("La tarea no existe o ya fue borrada.");
         }
     }
 }
