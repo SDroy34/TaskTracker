@@ -10,15 +10,16 @@ namespace ToDoListCLI.Class
     {
         public int IdTask { get; set; }
         public string TaskName { get; set; }
-        public DateTime TaskLimitTime {  get; set; }
+        public DateTime TaskLimitTime { get; set; }
         public DateTime TaskCreation { get; set; }
         public DateTime TaskUpdate { get; set; }
-        public string StrState { get; set; }
-        public string StrPriority { get; set; }
+        public string? StrState { get; set; }
+        public string? StrPriority { get; set; }
+        public int IdFkState { get; set; }
+        public int IdFkPriority { get; set; }
 
-        
 
-        public TasksToDoList(int idTask, string taskName, DateTime taskLimitTime, DateTime taskCreation, DateTime taskUpdate, string strState, string idFkPriority)
+        public TasksToDoList(int idTask, string taskName, DateTime taskLimitTime, DateTime taskCreation, DateTime taskUpdate, string strState, string strPriority, int idFkState, int idFkPriority)
         {
             IdTask = idTask;
             TaskName = taskName;
@@ -26,8 +27,31 @@ namespace ToDoListCLI.Class
             TaskCreation = taskCreation;
             TaskUpdate = taskUpdate;
             StrState = strState;
-            StrPriority = idFkPriority;
-            
+            StrPriority = strPriority;
+            IdFkState = idFkState;
+            IdFkPriority = idFkPriority;
+
+        }
+        public TasksToDoList(int idTask, string taskName, DateTime taskLimitTime, DateTime taskCreation, DateTime taskUpdate, int idFkState, int idFkPriority)
+        {
+            IdTask = idTask;
+            TaskName = taskName;
+            TaskLimitTime = taskLimitTime;
+            TaskCreation = taskCreation;
+            TaskUpdate = taskUpdate;
+            IdFkState = idFkState;
+            IdFkPriority = idFkPriority;
+
+        }
+        public TasksToDoList(string taskName, DateTime taskLimitTime, DateTime taskCreation, DateTime taskUpdate, int idFkState, int idFkPriority)
+        {
+            TaskName = taskName;
+            TaskLimitTime = taskLimitTime;
+            TaskCreation = taskCreation;
+            TaskUpdate = taskUpdate;
+            IdFkState = idFkState;
+            IdFkPriority = idFkPriority;
+
         }
     }
 }
