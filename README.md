@@ -19,3 +19,14 @@ task-cli list
 task-cli list done
 task-cli list todo
 task-cli list in-progress
+
+#Crear Base de datos en Sqlite3
+CREATE TABLE tasks(
+idTask INTERGER PRIMARY KEY AUTOINCREMENT,
+taskName TEXT,
+taskLimitTime DATETIME,
+taskCreation DATETIME,
+taskUpdate DATETIME,
+idFkState INTERGER,
+idFkPriority INTERGER
+);
